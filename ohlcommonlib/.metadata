@@ -15,6 +15,9 @@ migration:
     - platform: root
       create_revision: 4bdd9a849629b4f08cd31605a33ce61336fc2e90
       base_revision: 4bdd9a849629b4f08cd31605a33ce61336fc2e90
+    - platform: android
+      create_revision: 4bdd9a849629b4f08cd31605a33ce61336fc2e90
+      base_revision: 4bdd9a849629b4f08cd31605a33ce61336fc2e90
 
   # User provided section
 

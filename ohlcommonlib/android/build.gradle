@@ -1,0 +1,50 @@
+group 'com.ohaola.sdk.flutter.ohlcommonlib'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+def mobCompileSdkVersion = 28
+try {
+    mobCompileSdkVersion = flutter.compileSdkVersion
+    if (rootProject.hasProperty("ohl-compileSdkVersion")) {
+        mobCompileSdkVersion = Integer.parseInt(rootProject.getProperty('ohl-compileSdkVersion'))
+    }
+} catch (Throwable throwable) {
+
+}
+
+android {
+    compileSdkVersion mobCompileSdkVersion
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.ohaola.sdk.flutter.ohlcommonlib'
+    }
+
+    defaultConfig {
+        minSdkVersion 16
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
+dependencies {
+    compileOnly fileTree(dir: "libs", include: ["*.jar", "*.aar"], exclude: [])
+}
