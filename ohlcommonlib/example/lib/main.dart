@@ -5,19 +5,16 @@ import 'package:flutter/services.dart';
 import 'package:ohlcommonlib/ohlcommonlib.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
   @override
-  State<MyApp> createState() => _MyAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  final _ohlcommonlibPlugin = Ohlcommonlib();
 
   @override
   void initState() {
@@ -29,10 +26,8 @@ class _MyAppState extends State<MyApp> {
   Future<void> initPlatformState() async {
     String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
     try {
-      platformVersion =
-          await _ohlcommonlibPlugin.getPlatformVersion() ?? 'Unknown platform version';
+      platformVersion = await OHLcommonlib.platformVersion;
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -52,12 +47,84 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('OHLCommon example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: new Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Container(
+            child: new ListView.builder(
+              itemCount: 1,
+              itemBuilder: (context, i)=> renderRow(i,context),
+            ),
+          ),
         ),
       ),
+    );
+  }
+
+  void showAlert(String text, BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+            title: new Text("提示"),
+            content: new Text(text),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("OK"),
+                onPressed: () {
+                  // 关闭弹框
+                  Navigator.of(context).pop();
+                },
+              )
+            ]));
+  }
+
+  void showPrivacyAlert(String text, BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+            title: new Text("隐私协议"),
+            content: new Text(text),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("同意"),
+                onPressed: () {
+                  // 关闭弹框
+                  Navigator.of(context).pop();
+                  OHLcommonlib.submitPolicyGrantResult(true, null);
+                },
+              ),
+              new TextButton(
+                child: new Text("拒绝"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  OHLcommonlib.submitPolicyGrantResult(false, null);
+                },
+              )
+            ]));
+  }
+
+  Widget renderRow(i, BuildContext context){
+    return new Column(
+
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          height: 30,
+        ),
+        Text('Running on: $_platformVersion\n'),
+        ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: double.infinity),
+          child: new TextButton(
+            //color: Colors.blueGrey,
+            //textColor: Colors.white,
+            child: new Text('打开隐私协议弹框'),
+            onPressed: (){
+              showPrivacyAlert('是否同意隐私协议？',context);
+            },
+          ),
+        ),
+      ],
     );
   }
 }

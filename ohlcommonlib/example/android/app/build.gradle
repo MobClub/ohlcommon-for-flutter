@@ -1,0 +1,87 @@
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new FileNotFoundException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+apply plugin: 'com.android.application'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+// 导入MobSDK
+apply plugin: 'cn.fly.sdk'
+
+Calendar cal = Calendar.getInstance()
+int year = cal.get(Calendar.YEAR)
+int month  = cal.get(Calendar.MONTH) + 1
+int day = cal.get(Calendar.DAY_OF_MONTH)
+int hour = cal.get(Calendar.HOUR_OF_DAY)
+int minute = cal.get(Calendar.MINUTE)
+int seconds = cal.get(Calendar.SECOND)
+String yearStr = String.valueOf(year)
+String monthStr = month < 10 ? "0" + month : String.valueOf(month)
+String dayStr = day < 10 ? "0" + day : String.valueOf(day)
+String hourStr = hour < 10 ? "0" + hour : String.valueOf(hour)
+String minuteStr = minute < 10 ? "0" + minute : String.valueOf(minute)
+String secondsStr = seconds < 10 ? "0" + seconds : String.valueOf(seconds)
+
+android {
+    compileSdkVersion 31
+    if (project.android.hasProperty("namespace")){
+        namespace 'com.ohaola.sdk.flutter.OHLcommonlib_example"'
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.ohaola.sdk.flutter.OHLcommonlib_example"
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion 31
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (variant.buildType.name == 'release' || variant.buildType.name == 'debug') {
+                def fileName
+                fileName = "UltFlutter" + "-" + yearStr + monthStr + dayStr + "_" + hourStr + minuteStr + ".apk"
+                outputFileName = fileName
+            }
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+FlySDK {
+    appKey "34adc4c48214f"
+    appSecret "51215bd55b319a54023c1ecd23647323"
+}

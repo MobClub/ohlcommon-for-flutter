@@ -1,14 +1,30 @@
-// You have generated a new plugin project without specifying the `--platforms`
-// flag. A plugin project with no platform support was generated. To add a
-// platform, run `flutter create -t plugin --platforms <platforms> .` under the
-// same directory. You can also find a detailed instruction on how to add
-// platforms in the `pubspec.yaml` at
-// https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
+import 'dart:async';
 
-import 'ohlcommonlib_platform_interface.dart';
+import 'package:flutter/services.dart';
 
-class Ohlcommonlib {
-  Future<String?> getPlatformVersion() {
-    return OhlcommonlibPlatform.instance.getPlatformVersion();
+class OHLcommonlib {
+  static const MethodChannel _channel =
+      const MethodChannel('com.ohaola.sdk.ohlcommonlib');
+
+  static Future<String> get platformVersion async {
+    final String version = await _channel.invokeMethod('getPlatformVersion');
+    return version;
+  }
+
+  static Future submitPolicyGrantResult(
+      bool granted, Function(dynamic ret, Map? err)? result) {
+    Map args = {"granted": granted};
+    Future<dynamic> callback =
+        _channel.invokeMethod('submitPolicyGrantResult', args);
+    callback.then((dynamic response) {
+      if (result != null) {
+        if (response is Map) {
+          result(response["ret"], response["err"]);
+        } else {
+          result(null, null);
+        }
+      }
+    });
+    return callback;
   }
 }
