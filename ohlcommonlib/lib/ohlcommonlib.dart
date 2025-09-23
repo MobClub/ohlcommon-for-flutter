@@ -11,6 +11,11 @@ class OHLcommonlib {
     return version;
   }
 
+  static void intApp(String appKey, String appSecret) {
+    Map args = {"appKey": appKey, "appSecret": appSecret};
+    _channel.invokeMethod('registerApp', args);
+  }
+
   static Future submitPolicyGrantResult(
       bool granted, Function(dynamic ret, Map? err)? result) {
     Map args = {"granted": granted};
