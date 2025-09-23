@@ -21,4 +21,6 @@ flutter:
       android:
         package: com.ohaola.sdk.flutter.ohlcommonlib
         pluginClass: OHLcommonlibPlugin
+      ios:
+        pluginClass: OHLcommonlibPlugin
 

@@ -1,6 +1,6 @@
-# ohlcommonlib_example
+# example
 
-Demonstrates how to use the ohlcommonlib plugin.
+A new Flutter project.
 
 ## Getting Started
 
