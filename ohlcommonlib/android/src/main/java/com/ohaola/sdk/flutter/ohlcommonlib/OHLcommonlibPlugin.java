@@ -1,6 +1,6 @@
 package com.ohaola.sdk.flutter.ohlcommonlib;
 
-import com.mob.MobSDK;
+import com.ohaola.sdk.tool.wrapper.MobSDK;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
